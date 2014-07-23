@@ -399,7 +399,7 @@ public class PropagationProcess implements Runnable {
 
             double SrcReceiverDistance = Math.sqrt(dx*dx+dy*dy+dz*dz);
 
-// todo insert condition delta < lambda/20 if use Atalus
+// todo insert the condition delta < lambda/20 if Atalus (the attenuation from a possible bank source side) is used
 
             if (!somethingHideReceiver) {
                 // Evaluation of energy at receiver
