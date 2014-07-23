@@ -73,17 +73,16 @@ public class FastObstructionTest {
     private List<Float> verticesOpenAngle = null;
     private List<Coordinate> verticesOpenAngleTranslated = null; /*Open angle*/
     private boolean hasBuildingWithHeight;
-    //private LinkedList<Integer> BuildingTriangleIndex= new LinkedList<Integer>(); /* the buildings list between source and receiver. Reconstruction after get a new source-reciver */
-    //private LinkedList<Coordinate> intersections= new LinkedList<Coordinate>();/* the intersection of the segment source-receiver and builiding's side. Reconstruction after get a new source-reciver */
+    //private LinkedList<Integer> BuildingTriangleIndex= new LinkedList<Integer>(); /* the buildings list between source and receiver. Reconstruction after get a new source-receiver */
+    //private LinkedList<Coordinate> intersections= new LinkedList<Coordinate>();/* the intersection of the segment source-receiver and building's side. Reconstruction after get a new source-receiver */
 
 
     //data for calculate 3D diffraction,
-    //first Coordinate is the coordinate after the changement coordinate system, the second parameter will keep the data of orignal coordinate system
+    //first Coordinate is the coordinate after the changing coordinate system, the second parameter will keep the data of original coordinate system
 
     public final int Delta_Distance = 0;//delta distance;
     public final int E_Length = 1;//e length
-    public final int Full_Diffraction_Distance = 2;//the full distance of difrraction path
-    public final int SrcReceiverDistance = 0;
+    public final int Full_Diffraction_Distance = 2;//the full distance of diffraction path
 
     /**
      * New constructor, initialize buildings, triangles and points from mesh data
@@ -92,7 +91,7 @@ public class FastObstructionTest {
      * @param triangles    list of triangles including buildingID which correspondent the building e.x: triangle.buildingID=1 <=> buildings[0]
      *                     If a triangle is not in building, buildingID for this triangle is 0
      * @param triNeighbors list of neighbors triangle
-     * @param points       list of all points in mesh, this points includes vertices of building, Topograhic points, vertices of boundingBox
+     * @param points       list of all points in mesh, this points includes vertices of building, Topographic points, vertices of boundingBox
      */
     public FastObstructionTest(LinkedList<MeshBuilder.PolygonWithHeight> buildings,
                                List<Triangle> triangles, List<Triangle> triNeighbors, List<Coordinate> points) {
@@ -176,7 +175,7 @@ public class FastObstructionTest {
         final Coordinate cTri = this.vertices.get(tri.getC());
         double distline_line;
         Coordinate intersection = new Coordinate();
-        //if there is no intersection, by default we set the - max value to topointersection to avoid the problem
+        //if there is no intersection, by default we set the - max value to Topography intersection to avoid the problem
         double zTopoIntersection = -Double.MAX_VALUE;
         double zRandSIntersection;
         // Intersection First Side
@@ -185,14 +184,14 @@ public class FastObstructionTest {
         //add: search triangle without height
         if (idneigh != -1 && !navigationHistory.contains(idneigh)) {
             distline_line = propagationLine.distance(new LineSegment(aTri, bTri));
-            if (distline_line < FastObstructionTest.epsilon && // Todo condition
+            if (distline_line < FastObstructionTest.epsilon &&
                     distline_line < nearestIntersectionPtDist && this.triVertices.get(idneigh).getBuidlingID() == 0) {
                 nearestIntersectionPtDist = distline_line;
                 nearestIntersectionSide = 2;
                 //we will get the intersection point coordinate with(x,y,NaN)
                 if (!(propagationLine.intersection(new LineSegment(aTri, bTri)) == null)) {
                     intersection = new Coordinate(propagationLine.intersection(new LineSegment(aTri, bTri)));
-                    //get this point Z using interseted segment.
+                    //get this point Z using interested segment.
                     zTopoIntersection = calculateLinearInterpolation(aTri, bTri, intersection);
                 }
             }
@@ -208,7 +207,7 @@ public class FastObstructionTest {
                 nearestIntersectionSide = 0;
                 if (!(propagationLine.intersection(new LineSegment(bTri, cTri)) == null)) {
                     intersection = new Coordinate(propagationLine.intersection(new LineSegment(bTri, cTri)));
-                    //get this point Z using interseted segment.
+                    //get this point Z using interested segment.
                     zTopoIntersection = calculateLinearInterpolation(bTri, cTri, intersection);
                 }
 
@@ -226,7 +225,7 @@ public class FastObstructionTest {
                 nearestIntersectionSide = 1;
                 if (!(propagationLine.intersection(new LineSegment(cTri, aTri)) == null)) {
                     intersection = new Coordinate(propagationLine.intersection(new LineSegment(cTri, aTri)));
-                    //get this point Z using interseted line.
+                    //get this point Z using interested line.
 
                     zTopoIntersection = calculateLinearInterpolation(cTri, aTri, intersection);
                 }
@@ -239,7 +238,7 @@ public class FastObstructionTest {
             if (zRandSIntersection >= zTopoIntersection) {
                 return this.triNeighbors.get(triIndex).get(nearestIntersectionSide);
             }
-            //Else, the Z of Topo intersection > Z calculated by propagation Line, the Topo intersection will block the propagation line
+            //Else, the Z of Topographic intersection > Z calculated by propagation Line, the Topographic intersection will block the propagation line
             else {
                 //Propagation line blocked by the topography
                 return -1;
@@ -252,7 +251,7 @@ public class FastObstructionTest {
     /**
      * Compute the next triangle index.Find the shortest intersection point of
      * triIndex segments to the p1 coordinate and add the triangles in building to the list
-     * and add the point of intersection(between segment of source-reciver and segment of triangle) to the list
+     * and add the point of intersection(between segment of source-receiver and segment of triangle) to the list
      *
      * @param triIndex        Triangle index
      * @param propagationLine Propagation line
@@ -336,7 +335,7 @@ public class FastObstructionTest {
             }
         }
         int BuildingNextTriID = this.triNeighbors.get(triIndex).get(nearestIntersectionSide);
-        boolean triNeighborIsBuidling = false;//check if the point is the intersection of triangle In the same building
+        boolean triNeighborIsBuilding = false;//check if the point is the intersection of triangle In the same building
         boolean intersectionPointOnBuilding = false;//check if the intersection point is On the building
         double nextTriHeight = 0.;
 
@@ -346,7 +345,7 @@ public class FastObstructionTest {
 
         if (tri.getBuidlingID() > 0 && (nextTriHeight > 0)) {
             //intersection is between two triangle in the same building, so we will not keep intersection point
-            triNeighborIsBuidling = true;
+            triNeighborIsBuilding = true;
         }
         //add height to this intersection
         if (tri.getBuidlingID() == 0 && nextTriHeight > 0) {
@@ -356,10 +355,10 @@ public class FastObstructionTest {
 
                 /*
                 //not useful for the Max function because we merged all buildings, 
-                //so we dont have intersection between the two differents buildings and the building height will be the same in a building
-                else if(tri.getBuidlingID()>0&&nextTriHeight>0){
+                //so we don't have intersection between the two differents buildings and the building height will be the same in a building
+                else if(tri.getBuildingID()>0&&nextTriHeight>0){
                     intersection.z=nextTriHeight;
-                            //Math.max(nextTriHeight, this.polygonWithHeight.get(tri.getBuidlingID()-1).getHeight());
+                            //Math.max(nextTriHeight, this.polygonWithHeight.get(tri.getBuildingID()-1).getHeight());
                 }
                 */
         else if (tri.getBuidlingID() > 0 && Double.compare(nextTriHeight, 0.) == 0) {
@@ -374,10 +373,10 @@ public class FastObstructionTest {
         if (nearestIntersectionSide != -1) {
 
             //if intersection is not the intersection in the same building, save this intersection to intersection list
-            if (!triNeighborIsBuidling && !propagationLine.p0.equals(intersection) && !propagationLine.p1.equals(intersection)) {
+            if (!triNeighborIsBuilding && !propagationLine.p0.equals(intersection) && !propagationLine.p1.equals(intersection)) {
 
-                //Buidling whcih is between ray source-receiver have 2 intersections,
-                //If the intersection is corner of the buiding, intersections will save 2 times with the same value
+                //Building which is between ray source-receiver have 2 intersections,
+                //If the intersection is corner of the building, intersections will save 2 times with the same value
                 return new TriIdWithIntersection(BuildingNextTriID, intersection, intersectionPointOnBuilding);
             } else {
                 return new TriIdWithIntersection(BuildingNextTriID, new Coordinate(-1, -1, -1), intersectionPointOnBuilding);
@@ -487,7 +486,7 @@ public class FastObstructionTest {
                 if (curVertex.get(idrange).compareTo(ccw2) == 0) {
                     inserted = true;
                     if (curVertex.size() > 2) {
-                        // Remove merged element and reloop
+                        // Remove merged element and loop again
                         doNewLoop = true;
                         inserted = false;
                         ccw2 = curVertex.get(idrange + 1);
@@ -500,7 +499,7 @@ public class FastObstructionTest {
                 } else if (curVertex.get(idrange + 1).compareTo(ccw1) == 0) {
                     inserted = true;
                     if (curVertex.size() > 2) {
-                        // Remove merged element and reloop
+                        // Remove merged element and loop again
                         doNewLoop = true;
                         inserted = false;
                         ccw1 = curVertex.get(idrange);
@@ -731,24 +730,24 @@ public class FastObstructionTest {
     }
 
     /**
-     * Get the distance of all intersections (after the filtration by algo Jarvis March)  between the source and the receiver to compute vertical diffraction
+     * Get the distance of all intersections (after the filtration by algorithm Jarvis March)  between the source and the receiver to compute vertical diffraction
      * Must called after finishPolygonFeeding
      *
-     * @param p1 Coordiante receiver
-     * @param p2 Coordiante source
+     * @param p1 Coordinate receiver
+     * @param p2 Coordinate source
      * @return DiffractionWithSoilEffectZone
      * Double list=DiffractionWithSoilEffectZone.diffractionData : data prepared to compute diffraction
      * Double[Delta_Distance]:delta distance;
      * Double[E_Length]:e;
      * Double[Full_Diffraction_Distance]:the full distance of diffraction path
-     * if Double[Delta_Distance],Double[E_Length],Double[Full_Diffraction_Distance],Double[Full_Distance_With_Soil_Effet] are -1. then no usefull intersections.
+     * if Double[Delta_Distance],Double[E_Length],Double[Full_Diffraction_Distance],Double[Full_Distance_With_Soil_Effect] are -1. then no useful intersections.
      */
     @SuppressWarnings("unchecked")
     public DiffractionWithSoilEffetZone getPath(Coordinate p1, Coordinate p2) {
         /*
-        data for caculate 3D diffraction,éé
-        first Coordinate is the coordinate after the changment coordinate system,
-        the second parameter will keep the data of orignal coordinate system
+        data for calculate 3D diffraction,éé
+        first Coordinate is the coordinate after the modification coordinate system,
+        the second parameter will keep the data of original coordinate system
         */
 
         HashMap<Coordinate, TriIdWithIntersection> newCoorInter = new HashMap<Coordinate, TriIdWithIntersection>();
@@ -832,7 +831,7 @@ public class FastObstructionTest {
             newPoints.get(i).setCoordinate(new Coordinate(pointsX[i], pointsY[i]));
             newCoorInter.put(newPoints.get(i), interPoints.get(i));
         }
-        //algo JarvisMarch to get the convex hull
+        //algorithm JarvisMarch to get the convex hull
         JarvisMarch jm = new JarvisMarch(new JarvisMarch.Points(pointsX, pointsY));
         JarvisMarch.Points points = jm.calculateHull();
         //if there are no useful intersection
@@ -854,7 +853,7 @@ public class FastObstructionTest {
                     if (p2.equals(newCoorInter.get(new Coordinate(points.x[i + 1], points.y[i + 1])).getCoorIntersection()) && i > 0) {
                         break;
                     }
-                    //if after javis march the first point and the second point are Receiver and Source so we will quit loop and no diffraction in this case
+                    //if after Jarvis march the first point and the second point are Receiver and Source so we will quit loop and no diffraction in this case
                     else if (p2.equals(newCoorInter.get(new Coordinate(points.x[i + 1], points.y[i + 1])).getCoorIntersection()) && i == 0) {
                         // after jarvis march first point and second point are Receiver and Source
                         return totData;
@@ -903,7 +902,7 @@ public class FastObstructionTest {
                 lastPart[1] = p2;
                 //receiver-first intersection zone aims to calculate ground effect
                 rOZone = factory.createLineString(firstPart);
-                //last intersection-source zone aims to calculate ground effect (between rOZone and sOZone we ignore soil effet)
+                //last intersection-source zone aims to calculate ground effect (between rOZone and sOZone we ignore ground effect)
                 sOZone = factory.createLineString(lastPart);
 
                 totData = new DiffractionWithSoilEffetZone(data, rOZone, sOZone);
@@ -913,7 +912,7 @@ public class FastObstructionTest {
     }
 
     /**
-     * ChangeCoordinateSystem, use original coordinate in 3D to change into a new markland in 2D with new x' computed by algo and y' is original height of point.
+     * ChangeCoordinateSystem, use original coordinate in 3D to change into a new markland in 2D with new x' computed by algorithm and y' is original height of point.
      * Attention this function can just be used when the points in the same plane.
      * {@link "http://en.wikipedia.org/wiki/Rotation_matrix"}
      * {@link "http://read.pudn.com/downloads93/ebook/364220/zbzh.pdf"}
@@ -972,7 +971,7 @@ public class FastObstructionTest {
     }
 
     /**
-     * Caculate the Z of intersection point
+     * Calculate the Z of intersection point
      * {@see http://en.wikipedia.org/wiki/Linear_interpolation}
      *
      * @param p1           a point of intersected segment
