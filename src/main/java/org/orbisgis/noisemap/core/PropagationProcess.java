@@ -419,7 +419,7 @@ public class PropagationProcess implements Runnable {
                         for (EnvelopeWithIndex<Integer> envel : resultZ0) {
                             //get the geo intersected
                             Geometry geoInter = RSZone.intersection(data.geoWithSoilType.get(envel.getId()).getGeo());
-                            //add the intersected distance with soil effect
+                            //add the intersected distance with ground effect
                             totRSDistance += getIntersectedDistance(geoInter) * this.data.geoWithSoilType.get(envel.getId()).getType();
                         }
                     }
@@ -577,7 +577,7 @@ public class PropagationProcess implements Runnable {
 
                         //NF S 31-133 page 41 and page 40
                         double ASoilOSMin = -3 * (1 - gPathPrimeOS);
-                        double ASoilROMin = -3 * (1 - gPathRO);
+                        double ASoilROMin = -3 * (1 - gPathPrimeRO);
 
                         //NF S 31-133 page 41
                         if (Double.compare(gPathRO, 0.) == 0) {
