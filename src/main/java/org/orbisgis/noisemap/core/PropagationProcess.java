@@ -598,7 +598,7 @@ public class PropagationProcess implements Runnable {
                         deltSoilOR = getDeltSoil(SoilORAttenuation);
                     }
 
-                    //delt sol finished
+                    //delta sol finished
 
 
                     // Apply diffraction attenuation with ground effect if necessary
